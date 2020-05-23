@@ -70,6 +70,7 @@ BEGIN_MESSAGE_MAP(CMFC_0421_1Dlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_BUTTON1, &CMFC_0421_1Dlg::OnBnClickedButton1)
+	ON_BN_CLICKED(IDC_BUTTON2, &CMFC_0421_1Dlg::OnBnClickedButton2)
 END_MESSAGE_MAP()
 
 
@@ -163,16 +164,39 @@ HCURSOR CMFC_0421_1Dlg::OnQueryDragIcon()
 void CMFC_0421_1Dlg::OnBnClickedButton1()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	CString filename;
-	CFileDialog cfd(false);
+	CFileDialog cfd(true);
 	int r = cfd.DoModal();
 	if (r == IDOK)
 	{
-		filename = cfd.GetPathName();
-		CImage img;
-		img.Load(filename);
-		ofstream ofs(filename);
-		ofs << cfd.GetPathName();
-		//img.Draw(filename);
+		CString filename = cfd.GetPathName();
+		//CClientDC dc(this);
+		//int x = 20, y = 10;
+	    //dc.TextOutW(x, y, filename);
+		ofstream ofs(_T("C:\\Users\\Bug\\Desktop\\abc.txt"));
+		ofs << CT2A(filename);
+		ofs.close();
 	}
+}
+
+
+void CMFC_0421_1Dlg::OnBnClickedButton2()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	//filename = cfd.GetPathName();
+	
+	//ofstream ofs(filename);
+	//ofs << cfd.GetPathName();
+	//img.Draw(filename);
+	//dc.TextOutW(200, 200, CString(filename.c_str()));
+	string s;
+	ifstream ifs(_T("C:\\Users\\Bug\\Desktop\\abc.txt"));  // 打开文件
+	ifs >> s;  //  读取文件
+	CString filename = CString(s.c_str());
+	//CClientDC dc(this);
+	//dc.TextOutW(300, 300, filename);
+	ifs.close();
+	CImage img;
+	img.Load(filename);
+	CDC *pDC = GetDlgItem(IDC_STATIC)->GetDC();
+	img.Draw(pDC->m_hDC,0,0,img.GetWidth()*0.05,img.GetHeight()*0.05);
 }
